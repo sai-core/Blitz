@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLITZ Admin</title>
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#141417; --panel2:#1c1c20;
+    --red:#e50914; --text:#f3f3f3; --text-dim:#9a9aa0; --line:rgba(255,255,255,.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+    font-family:"Helvetica Neue",Arial,"Segoe UI",sans-serif;}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+    background:#0a0a0c;border-bottom:1px solid var(--line);}
+  .brand{display:flex;align-items:center;gap:6px;font-weight:800;font-size:20px;letter-spacing:1px;
+    text-decoration:none;color:var(--text);}
+  .brand .v{color:var(--red);}
+  .home-link{color:var(--text-dim);font-size:13px;text-decoration:none;border:1px solid var(--line);
+    padding:8px 14px;border-radius:6px;}
+  .home-link:hover{color:var(--text);background:rgba(255,255,255,.08);}
+
+  .wrap{max-width:640px;margin:0 auto;padding:32px 20px 60px;}
+  h2{font-size:18px;margin:0 0 18px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px;margin-bottom:20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+  .field input{width:100%;padding:11px 12px;border-radius:6px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--text);font-size:14px;outline:none;}
+  .field input:focus{border-color:var(--red);}
+  .btn{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line);
+    padding:10px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;}
+  .btn:hover{background:rgba(255,255,255,.16);}
+  .btn.primary{background:var(--red);border-color:var(--red);}
+  .btn.primary:hover{background:#f6121d;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .msg{font-size:13px;margin-top:10px;min-height:18px;}
+  .msg.ok{color:#4ade80;}
+  .msg.err{color:var(--red);}
+
+  .list{display:flex;flex-direction:column;gap:8px;}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 12px;background:var(--panel2);border-radius:6px;border:1px solid var(--line);}
+  .row .t{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row .del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:13px;flex-shrink:0;}
+  .row .del:hover{color:var(--red);}
+  .empty{color:var(--text-dim);font-size:13px;padding:10px 0;}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a class="brand" href="index.html"><span class="v">⚡</span>BLITZ Admin</a>
+  <a class="home-link" href="index.html">← Home</a>
+</div>
+
+<div class="wrap">
+
+  <div class="card" id="loginCard">
+    <h2>Admin Login</h2>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="pwInput" placeholder="Enter admin password">
+    </div>
+    <button class="btn primary" id="loginBtn">Unlock</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+
+  <div id="panel" style="display:none;">
+    <div class="card">
+      <h2>Add Video</h2>
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="inTitle" placeholder="e.g. Class 10 - Physics Lecture 4">
+      </div>
+      <div class="field">
+        <label>Video URL (.mp4 / direct link)</label>
+        <input type="text" id="inUrl" placeholder="https://.../stream/xxx.mp4?raw=true">
+      </div>
+      <div class="field">
+        <label>Thumbnail URL (optional)</label>
+        <input type="text" id="inThumb" placeholder="https://.../thumb.jpg">
+      </div>
+      <button class="btn primary" id="addBtn">Add & Commit to GitHub</button>
+      <div class="msg" id="addMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Existing Videos</h2>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  let password = '';
+
+  const loginCard = document.getElementById('loginCard');
+  const panel = document.getElementById('panel');
+  const pwInput = document.getElementById('pwInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginMsg = document.getElementById('loginMsg');
+
+  const inTitle = document.getElementById('inTitle');
+  const inUrl = document.getElementById('inUrl');
+  const inThumb = document.getElementById('inThumb');
+  const addBtn = document.getElementById('addBtn');
+  const addMsg = document.getElementById('addMsg');
+  const list = document.getElementById('list');
+
+  function escapeHtml(s){
+    return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function loadList(){
+    list.innerHTML = '<div class="empty">Loading…</div>';
+    try{
+      const res = await fetch('/api/videos');
+      const videos = await res.json();
+      if(!videos.length){
+        list.innerHTML = '<div class="empty">No videos yet.</div>';
+        return;
+      }
+      list.innerHTML = videos.map(v => `
+        <div class="row" data-id="${escapeHtml(v.id)}">
+          <span class="t">${escapeHtml(v.title)}</span>
+          <button class="del">Delete</button>
+        </div>
+      `).join('');
+      list.querySelectorAll('.del').forEach(btn=>{
+        btn.addEventListener('click', async (e)=>{
+          const row = e.target.closest('.row');
+          const id = row.dataset.id;
+          if(!confirm('Delete this video?')) return;
+          btn.disabled = true;
+          btn.textContent = 'Deleting…';
+          try{
+            const res = await fetch('/api/delete-video', {
+              method:'POST', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({ password, id })
+            });
+            const data = await res.json();
+            if(!res.ok) throw new Error(data.error || 'Failed');
+            loadList();
+          }catch(e){
+            alert('Delete failed: ' + e.message);
+            btn.disabled = false;
+            btn.textContent = 'Delete';
+          }
+        });
+      });
+    }catch(e){
+      list.innerHTML = '<div class="empty">Couldn\'t load list.</div>';
+    }
+  }
+
+  loginBtn.addEventListener('click', async ()=>{
+    const pw = pwInput.value;
+    if(!pw){ loginMsg.textContent = 'Enter a password.'; return; }
+    // Validate by attempting a harmless call pattern: we just trust it here
+    // and let the first real add/delete call confirm server-side.
+    password = pw;
+    loginCard.style.display = 'none';
+    panel.style.display = 'block';
+    loginMsg.textContent = '';
+    loadList();
+  });
+  pwInput.addEventListener('keydown', e=>{ if(e.key==='Enter') loginBtn.click(); });
+
+  addBtn.addEventListener('click', async ()=>{
+    const title = inTitle.value.trim();
+    const url = inUrl.value.trim();
+    const thumb = inThumb.value.trim();
+    if(!title || !url){
+      addMsg.className = 'msg err';
+      addMsg.textContent = 'Title and video URL are required.';
+      return;
+    }
+    addBtn.disabled = true;
+    addMsg.className = 'msg';
+    addMsg.textContent = 'Committing to GitHub…';
+    try{
+      const res = await fetch('/api/add-video', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ password, title, url, thumb })
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || 'Failed');
+      addMsg.className = 'msg ok';
+      addMsg.textContent = 'Added! Committed to GitHub.';
+      inTitle.value = ''; inUrl.value = ''; inThumb.value = '';
+      loadList();
+    }catch(e){
+      addMsg.className = 'msg err';
+      addMsg.textContent = 'Error: ' + e.message + (e.message.includes('password') ? ' — go back and re-check your password.' : '');
+    }finally{
+      addBtn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
