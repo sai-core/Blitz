@@ -3,115 +3,240 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>BLITZ</title>
+<title>OMNITRIX // BLITZ DATABASE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#08080b; --bg2:#0e0e12; --panel:#151519; --panel2:#1b1b20;
-    --red:#ff1f42; --spark:#ffd400; --text:#f5f5f7; --text-dim:#8c8c94; --line:rgba(255,255,255,.09);
-    --font-display:'Space Grotesk',sans-serif; --font-body:'Inter',"Helvetica Neue",Arial,sans-serif;
+  :root {
+    --bg: #020603;
+    --surface: #061208;
+    --card-bg: rgba(6, 24, 10, 0.75);
+    --card-hover: rgba(10, 42, 16, 0.9);
+    --omni-green: #00ff66;
+    --omni-bright: #39ff14;
+    --omni-glow: rgba(0, 255, 102, 0.35);
+    --text: #e0f8e6;
+    --text-dim: #6b9e78;
+    --border: rgba(0, 255, 102, 0.2);
+    --border-glow: rgba(0, 255, 102, 0.6);
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Share Tech Mono', monospace;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;min-height:100%;color:var(--text);font-family:var(--font-body);
-    background:
-      radial-gradient(900px 500px at 15% -10%, rgba(255,31,66,.10), transparent 60%),
-      radial-gradient(700px 500px at 100% 0%, rgba(255,212,0,.05), transparent 55%),
-      var(--bg);
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  html, body {
+    margin: 0; min-height: 100%; color: var(--text); font-family: var(--font-body);
+    background-color: var(--bg);
+    background-image: 
+      linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 50% 0%, rgba(0, 255, 102, 0.1), transparent 60%);
+    background-size: 30px 30px, 30px 30px, 100% 100%;
+    background-attachment: fixed;
+    overflow-x: hidden;
   }
-  ::selection{background:var(--red);color:#fff;}
-  ::-webkit-scrollbar{width:10px;height:10px;}
-  ::-webkit-scrollbar-track{background:var(--bg);}
-  ::-webkit-scrollbar-thumb{background:#28282f;border-radius:6px;}
-  ::-webkit-scrollbar-thumb:hover{background:#38383f;}
 
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;
-    background:rgba(9,9,11,.75);backdrop-filter:blur(14px) saturate(140%);
-    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
-  .brand{display:flex;align-items:center;gap:7px;font-family:var(--font-display);font-weight:700;
-    font-size:22px;letter-spacing:.5px;}
-  .brand .v{color:var(--red);font-size:26px;display:inline-block;animation:boltPulse 1.8s ease-in-out infinite;
-    filter:drop-shadow(0 0 7px rgba(255,31,66,.75));}
-  @keyframes boltPulse{
-    0%,100%{transform:scale(1) rotate(0deg);filter:drop-shadow(0 0 4px rgba(255,31,66,.5));}
-    45%{transform:scale(1.18) rotate(-6deg);filter:drop-shadow(0 0 13px rgba(255,212,0,.85));}
-    55%{transform:scale(1.05) rotate(4deg);}
+  ::selection { background: var(--omni-green); color: #020603; }
+  
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 255, 102, 0.3); border-radius: 0px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--omni-green); box-shadow: 0 0 10px var(--omni-green); }
+
+  /* Navigation Bar */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(2, 6, 3, 0.85);
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    gap: 15px;
   }
-  .brand b.shine{background:linear-gradient(100deg,var(--text) 40%,#fff 50%,var(--text) 60%);
-    background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shineMove 3.4s linear infinite;}
-  @keyframes shineMove{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-  .admin-link{color:var(--text-dim);font-size:13px;text-decoration:none;border:1px solid var(--line);
-    padding:8px 14px;border-radius:7px;transition:.15s;font-weight:500;}
-  .admin-link:hover{color:var(--text);background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);}
+  
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 18px; letter-spacing: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  
+  .brand .v {
+    color: var(--omni-green); font-size: 20px; display: inline-block;
+    filter: drop-shadow(0 0 10px var(--omni-green));
+    animation: omniPulse 1.5s ease-in-out infinite alternate;
+  }
 
-  .content{padding:32px 32px 80px;max-width:1400px;margin:0 auto;}
-  .row-head{display:flex;align-items:baseline;justify-content:space-between;margin:4px 0 20px;}
-  .row-head h2{font-family:var(--font-display);font-size:19px;margin:0;font-weight:700;letter-spacing:.2px;}
-  .row-head span{font-size:12px;color:var(--text-dim);}
+  @keyframes omniPulse {
+    0% { filter: drop-shadow(0 0 4px var(--omni-green)); transform: rotate(0deg) scale(1); }
+    100% { filter: drop-shadow(0 0 16px var(--omni-bright)); transform: rotate(180deg) scale(1.1); }
+  }
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-  .card{position:relative;height:124px;border-radius:10px;overflow:hidden;cursor:pointer;
-    background:linear-gradient(135deg,#1c1c22,#0d0d10);border:1px solid var(--line);
-    opacity:0;transform:translateY(10px) scale(.98);
-    animation:cardIn .45s ease forwards;
-    transition:transform .25s ease, box-shadow .25s ease, border-color .25s;}
-  @keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1);}}
-  .card::before{content:'';position:absolute;inset:-1px;border-radius:11px;padding:1px;
-    background:conic-gradient(from 0deg, var(--red), var(--spark), var(--red));
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    opacity:0; transition:opacity .25s; animation:spin 3s linear infinite; animation-play-state:paused;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .card:hover{transform:scale(1.045);box-shadow:0 14px 34px rgba(0,0,0,.65);}
-  .card:hover::before{opacity:1;animation-play-state:running;}
-  .card .thumb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.92;
-    transition:transform .3s ease;}
-  .card:hover .thumb{transform:scale(1.06);}
-  .card .fade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),transparent 60%);}
-  .card .title{position:absolute;left:11px;right:11px;bottom:9px;font-size:13px;font-weight:600;
-    text-shadow:0 2px 6px rgba(0,0,0,.8);
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .card .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    opacity:0;transition:.2s;background:rgba(0,0,0,.25);}
-  .card:hover .play{opacity:1;}
-  .card .play svg{width:38px;height:38px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.8));}
+  .brand b.shine {
+    background: linear-gradient(90deg, #fff 20%, var(--omni-green) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+  }
 
-  .empty-hint,.err-hint{color:var(--text-dim);font-size:13px;padding:26px;border:1px dashed var(--line);
-    border-radius:10px;text-align:center;}
-  .skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-  .skel{height:124px;border-radius:10px;background:linear-gradient(100deg,#16161a 30%,#1f1f25 50%,#16161a 70%);
-    background-size:250% 100%;animation:shimmer 1.4s ease-in-out infinite;}
-  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .admin-link {
+    color: var(--omni-green); font-size: 12px; text-decoration: none;
+    border: 1px solid var(--border); background: rgba(0, 255, 102, 0.05);
+    padding: 8px 14px; border-radius: 4px; transition: all 0.25s ease;
+    font-family: var(--font-display); font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+  }
+  
+  .admin-link:hover {
+    color: #020603; background: var(--omni-green);
+    border-color: var(--omni-bright); box-shadow: 0 0 15px var(--omni-green);
+  }
 
-  @media (max-width:640px){
-    .nav{padding:12px 16px;}
-    .content{padding:18px 16px 60px;}
-    .grid,.skeleton-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-    .card,.skel{height:96px;}
+  /* Main Layout */
+  .content { padding: 32px 32px 80px; max-width: 1500px; margin: 0 auto; }
+  
+  .row-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 10px;
+    gap: 12px; overflow: hidden;
+  }
+  
+  .row-head h2 {
+    font-family: var(--font-display); font-size: 13px; margin: 0;
+    font-weight: 700; letter-spacing: 1px; color: var(--omni-green);
+    text-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+    text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  
+  .row-head span { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; white-space: nowrap; flex-shrink: 0; }
+
+  /* Grid System */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  
+  .card {
+    position: relative; height: 150px; border-radius: 6px; overflow: hidden; cursor: pointer;
+    background: var(--card-bg); border: 1px solid var(--border);
+    opacity: 0; transform: translateY(10px);
+    animation: cardIn 0.4s ease forwards;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Omnitrix Laser Border Hover */
+  .card::before {
+    content: ''; position: absolute; inset: -2px; border-radius: 8px; padding: 1px;
+    background: linear-gradient(135deg, var(--omni-green), #00ffff, var(--omni-green));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--omni-glow);
+    border-color: transparent;
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card .thumb {
+    position: absolute; inset: 0; background-size: cover; background-position: center;
+    opacity: 0.8; filter: saturate(1.2); transition: transform 0.4s ease, opacity 0.3s;
+  }
+
+  .card:hover .thumb { transform: scale(1.06); opacity: 0.95; }
+
+  .card .fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(2, 6, 3, 0.95) 15%, rgba(2, 6, 3, 0.4) 60%, transparent 100%);
+  }
+
+  .card .title {
+    position: absolute; left: 14px; right: 14px; bottom: 12px;
+    font-size: 11px; font-weight: bold; line-height: 1.2; color: var(--text);
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    z-index: 2;
+  }
+
+  .card .play {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: all 0.25s ease; background: rgba(2, 6, 3, 0.6);
+    z-index: 3;
+  }
+
+  .card:hover .play { opacity: 1; }
+
+  .card .play svg {
+    width: 44px; height: 44px; fill: var(--omni-green);
+    filter: drop-shadow(0 0 10px var(--omni-green));
+    transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .card:hover .play svg { transform: scale(1.1); }
+
+  /* States: Empty, Error, Skeletons */
+  .empty-hint, .err-hint {
+    color: var(--text-dim); font-size: 14px; padding: 36px;
+    border: 1px dashed var(--border); border-radius: 6px; text-align: center;
+    background: var(--card-bg); letter-spacing: 1px;
+  }
+
+  .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  
+  .skel {
+    height: 150px; border-radius: 6px;
+    background: linear-gradient(90deg, rgba(0, 255, 102, 0.02) 25%, rgba(0, 255, 102, 0.08) 50%, rgba(0, 255, 102, 0.02) 75%);
+    background-size: 300% 100%; animation: shimmer 1.6s infinite ease-in-out;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 640px) {
+    .nav { padding: 12px 16px; }
+    .brand { font-size: 15px; }
+    .admin-link { padding: 6px 10px; font-size: 11px; }
+    .content { padding: 20px 16px 60px; }
+    .grid, .skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .card, .skel { height: 110px; }
+    .card .title { font-size: 10px; left: 10px; right: 10px; bottom: 8px; }
+    .row-head h2 { font-size: 10px; }
+    .row-head span { font-size: 9px; }
   }
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="brand"><span class="v">⚡</span><b class="shine">BLITZ</b></div>
-  <a class="admin-link" href="admin.html">Admin</a>
+  <div class="brand"><span class="v">⚡</span><b class="shine">OMNITRIX // BLITZ</b></div>
+  <a class="admin-link" href="admin.html">[ ADMIN ]</a>
 </div>
 
 <div class="content">
   <div class="row-head">
-    <h2>All Videos</h2>
-    <span id="countLabel"></span>
+    <h2>DNA Database // All Streams</h2>
+    <span id="countLabel">INITIALIZING...</span>
   </div>
+  
   <div id="loading" class="skeleton-grid">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
     <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
   </div>
+  
   <div id="grid" class="grid" style="display:none;"></div>
-  <div id="emptyHint" class="empty-hint" style="display:none;">No videos yet. Add one from the Admin panel.</div>
-  <div id="errHint" class="err-hint" style="display:none;">Couldn't load videos. Check back in a bit.</div>
+  <div id="emptyHint" class="empty-hint" style="display:none;">NO DNA SAMPLES FOUND. UPLOAD VIA ADMIN INTERFACE.</div>
+  <div id="errHint" class="err-hint" style="display:none;">TRANSMISSION ERROR. RE-ESTABLISHING LINK...</div>
 </div>
 
 <script>
@@ -132,7 +257,7 @@
     const videos = await res.json();
 
     loading.style.display = 'none';
-    countLabel.textContent = videos.length + (videos.length===1 ? ' video' : ' videos');
+    countLabel.textContent = videos.length + (videos.length === 1 ? ' SAMPLE ACQUIRED' : ' SAMPLES ACQUIRED');
 
     if(!videos.length){
       emptyHint.style.display = 'block';
@@ -140,23 +265,28 @@
     }
 
     grid.style.display = 'grid';
-    grid.innerHTML = videos.map((v,i) => `
-      <div class="card" data-id="${escapeHtml(v.id)}" style="animation-delay:${Math.min(i*45,450)}ms;">
-        <div class="thumb" style="${v.thumb ? `background-image:url('${escapeHtml(v.thumb)}')` : `background:linear-gradient(135deg,#2a2a30,#111);`}"></div>
+    grid.innerHTML = videos.map((v, i) => `
+      <div class="card" data-id="${escapeHtml(v.id)}" style="animation-delay:${Math.min(i * 40, 400)}ms;">
+        <div class="thumb" style="${v.thumb ? `background-image:url('${escapeHtml(v.thumb)}')` : `background:linear-gradient(135deg,#061208,#020603);`}"></div>
         <div class="fade"></div>
-        <div class="play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="play">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
         <div class="title">${escapeHtml(v.title)}</div>
       </div>
     `).join('');
 
-    grid.querySelectorAll('.card').forEach(card=>{
-      card.addEventListener('click', ()=>{
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
         window.location.href = 'player.html?id=' + encodeURIComponent(card.dataset.id);
       });
     });
-  }catch(e){
+  } catch(e) {
     loading.style.display = 'none';
     errHint.style.display = 'block';
+    countLabel.textContent = 'SIGNAL LOST';
   }
 })();
 </script>
