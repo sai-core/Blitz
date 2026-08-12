@@ -5,7 +5,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const { password, title, url, thumb } = req.body || {};
+    const { password, title, url, thumb, actor } = req.body || {};
 
     if (password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Wrong password' });
@@ -21,6 +21,7 @@ module.exports = async (req, res) => {
       title: title.trim(),
       url: url.trim(),
       thumb: (thumb || '').trim(),
+      actor: (actor || '').trim(),
       addedAt: new Date().toISOString()
     };
 
