@@ -14,7 +14,9 @@
 window.ACTOR_THUMBS = {
   "Savannah bond": "https://cdn.myrx.pw/uploads/2026/08/12/19a0a91975e0458db6a1aac604c910e0.jpg",
   "lasirena69": "https://cdn.myrx.pw/uploads/2026/08/12/f12a3125f261489ea6fff0c1945e56e8.jpg",
-  "nia bleu": "https://cdn.myrx.pw/uploads/2026/08/12/b6c9f11200f147de9551539e335256f0.jpg"
+  "nia bleu": "https://cdn.myrx.pw/uploads/2026/08/12/b6c9f11200f147de9551539e335256f0.jpg",
+  "brandy renee": "https://cdn.myrx.pw/uploads/2026/08/12/9290004bdc754b0fbe45caa478323307.jpg",
+  "mulan": "https://cdn.myrx.pw/uploads/2026/08/12/becc1a648a374018bedbb185eb9eb14d.jpg"
   // "actor name": "image url",
 };
 
